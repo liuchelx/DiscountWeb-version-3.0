@@ -1,9 +1,17 @@
 $(document).ready(function() {
     console.log("ready");
+    console.log("countDownArea1");
+    console.log("countDownArea2");
+    console.log("countDownArea3");
+    console.log("countDownArea4");
     countDown('countDownArea1');
+    
     countDown('countDownArea2');
+   
     countDown('countDownArea3');
+    
     countDown('countDownArea4');
+    
     //console.log(document.getElementById(forloopID).innerHTML)
 
     
