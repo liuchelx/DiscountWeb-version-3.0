@@ -1,0 +1,137 @@
+{% extends './base.html' %} {% load static %} {% block content%}
+
+    <div class="container mt-4">
+      <h4 class="text-secondary">Today Special:</h3>
+      <div class="row">
+        {% for product_spe in TodaySpecial %}
+          <div class="card col-sm" style="width: 18rem;">
+            <img src="{{product_spe.imglink}}" class="card-img-top" alt="Product" />
+            <div class="card-body">
+              <h5 class="card-title">{{ product_spe.ProductName }}</h5>
+              <p class="card-text">
+                <s>{{ product_spe.OriPrice }}$</s><br>
+                <b>{{ product_spe.DisPrice }}$</b><br>
+                End at:{{ product_spe.showEndTime }}
+              </p>
+              <a href= "{{product_spe.Shoplink}}" class="btn btn-primary">Shop Now!</a>
+              {% if user.is_authenticated %}
+                <a href="{% url 'discountsApp:add-product' id=product_spe.Product_ID %}" class="btn btn-secondary">Add to wishlist</a>
+              {% endif %}
+            </div>
+          </div>
+
+        {% endfor %}
+
+    </div>
+    </div>
+
+    <div class="container mt-4">
+      <h4 class="text-secondary">lastChance:</h3>
+      <div class="row">
+        {% for product_lc in lastChance %}
+          <div class="card col-sm" style="width: 18rem;">
+            <img src="{{product_lc.imglink}}" class="card-img-top" alt="Product" />
+            <div class="card-body">
+              <h5 class="card-title">{{ product_lc.ProductName }}</h5>
+              <p class="card-text">
+                <s>{{ product_lc.OriPrice }}$</s><br>
+                <b>{{ product_lc.DisPrice }}$</b><br>
+                End at:<p id='countDownArea{{forloop.counter}}' >{{ product_lc.EndTime|date:"yy,m,d" }}</p>
+              </p>
+              <a href= "{{product_lc.Shoplink}}" class="btn btn-primary">Shop Now!</a>
+              {% if user.is_authenticated %}
+                <a href="{% url 'discountsApp:add-product' id=product_lc.Product_ID %}" class="btn btn-secondary">Add to wishlist</a>
+              {% endif %}
+            </div>
+          </div>
+
+        {% endfor %}
+
+    </div>
+    </div>
+
+    <div class="container mt-4">
+      <h4 class="text-secondary">Luxury:</h3>
+      <div class="row">
+        {% for product_luxury in luxury %}
+          <div class="card col-sm" style="width: 18rem;">
+            <img src="{{product_luxury.imglink}}" class="card-img-top" alt="Product" />
+            <div class="card-body">
+              <h5 class="card-title">{{ product_luxury.ProductName }}</h5>
+              <p class="card-text">
+                <s>{{ product_luxury.OriPrice }}$</s><br>
+                <b>{{ product_luxury.DisPrice }}$</b><br>
+                {{ product_luxury.showEndTime }}
+              </p>
+              <a href= "{{product_luxury.Shoplink}}" class="btn btn-primary">Shop Now!</a>
+              {% if user.is_authenticated %}
+                <a href="{% url 'discountsApp:add-product' id=product_luxury.Product_ID %}" class="btn btn-secondary">Add to wishlist</a>
+              {% endif %}
+            </div>
+          </div>
+
+        {% endfor %}
+
+    </div>
+    </div>
+
+    <div class="container mt-4">
+      <h4 class="text-secondary">electronic product:</h3>
+      <div class="row">
+        {% for product_electronic in electronic_product %}
+          <div class="card col-sm" style="width: 18rem;">
+            <img src="{{product_electronic.imglink}}" class="card-img-top" alt="Product" />
+            <div class="card-body">
+              <h5 class="card-title">{{ product_electronic.ProductName }}</h5>
+              <p class="card-text">
+                <s>{{ product_electronic.OriPrice }}$</s><br>
+                <b>{{ product_electronic.DisPrice }}$</b><br>
+                {{ product_electronic.showEndTime }}
+              </p>
+              <a href= "{{product_electronic.Shoplink}}" class="btn btn-primary">Shop Now!</a>
+              {% if user.is_authenticated %}
+                <a href="{% url 'discountsApp:add-product' id=product_electronic.Product_ID %}" class="btn btn-secondary">Add to wishlist</a>
+              {% endif %}
+            </div>
+          </div>
+
+        {% endfor %}
+
+    </div>
+    </div>
+
+
+    <div class="container mt-4">
+      <h4 class="text-secondary">Clothing:</h3>
+      <div class="row">
+        {% for product_clothing in clothing %}
+          <div class="card col-sm" style="width: 18rem;">
+            <img src="{{product_clothing.imglink}}" class="card-img-top img-responsive" alt="Product" />
+            <div class="card-body">
+              <h5 class="card-title">{{ product_clothing.ProductName }}</h5>
+              <p class="card-text">
+                <s>{{ product_clothing.OriPrice }}$</s><br>
+                <b>{{ product_clothing.DisPrice }}$</b><br>
+                {{ product_clothing.showEndTime }}
+              </p>
+              <a href= "{{product_clothing.Shoplink}}" class="btn btn-primary">Shop Now!</a>
+              {% if user.is_authenticated %}
+                <a href="{% url 'discountsApp:add-product' id=product_clothing.Product_ID %}" class="btn btn-secondary">Add to wishlist</a>
+              {% endif %}
+            </div>
+          </div>
+
+        {% endfor %}
+
+      </div>
+    </div>
+
+
+ 
+{%endblock%}
+
+{%block scripts%}
+
+<script src="{%static './discountsApp/countDown.js' %}" defer></script>
+
+{% endblock%}

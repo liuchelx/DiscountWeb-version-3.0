@@ -1,0 +1,36 @@
+{% extends './base.html' %} {% block content%}
+
+    <div class="container mt-4">
+      <h4 class="text-secondary">My wishlist:</h3>
+      {% if wishlisted_products %}
+        <div class="row">
+            {% for product in wishlisted_products %}
+            <div class="card col-sm" style="width: 18rem;">
+                <img src="{{product.imglink}}" class="card-img-top" alt="Product" />
+                <div class="card-body">
+                <h5 class="card-title">{{ product.ProductName }}</h5>
+                <p class="card-text">
+                    <s>{{ product.OriPrice }}$</s><br>
+                    <b>{{ product.DisPrice }}$</b><br>
+                    Endding Time:{{ product.showEndTime }}
+                </p>
+                <a href= "{{product_spe.Shoplink}}" class="btn btn-primary">Shop Now!</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'discountsApp:remove-product' id=product.Product_ID %}" class="btn btn-secondary">Remove from wishlist</a>
+                {% endif %}
+                </div>
+            </div>
+
+            {% endfor %}
+        {% else %}
+            <div class="content-section">
+                <h3> Your wishlist is empty </h3>
+                <small> <a href="{%url 'discountsApp:discounts-main'%}">Add some products here!</a>
+            </div>
+    
+    {% endif %}
+
+    </div>
+    </div>
+
+    {% endblock %}

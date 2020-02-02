@@ -1,0 +1,68 @@
+{% extends './base.html' %} {% block content%}
+
+ {% comment %} {% if electronic %} 
+    {% for elec_item in electronic %}
+    <div class="row">
+    
+    
+    <div class="card col-md-5 col-md-offset-3" style="width: 9rem;">
+        <img src="{{elec_item.imglink}}" class="card-img-left" alt="Product" />
+        <div class="card-body">
+          <h5 class="card-title">{{ elec_item.ProductName }}</h5>
+          <p class="card-text">
+            <s>{{ elec_item.OriPrice }}$</s><br>
+            <b>{{ elec_item.DisPrice }}$</b><br>
+            {{ elec_item.showEndTime }}
+          </p>
+          <a href= "{{elec_item.Shoplink}}" class="btn btn-primary">Shop Now!</a>
+          {% if user.is_authenticated %}
+            <a href="{% url 'discountsApp:add-product' id=elec_item.Product_ID %}" class="btn btn-secondary">Add to wishlist</a>
+          {% endif %}
+        </div>
+      </div>
+    </div> {% endcomment %}
+<div class="container mt-4">
+  {% if electronic %} 
+  <div class="row">
+
+    {% for item in electronic %}
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100">
+          <a href="{{item.Shoplink}}"><img class="card-img-top product-image" src="{{item.imglink}}" alt=""></a>
+          <div class="card-body">
+            <h5 class="card-title">{{ item.ProductName }}</h5>
+            <p class="card-text">
+              <s>{{ item.OriPrice }}$</s><br>
+              <b>{{ item.DisPrice }}$</b><br>
+              {{ item.showEndTime }}
+            </p>
+
+          <div class="row">
+            <a href= "{{item.Shoplink}}" class="btn btn-primary small-8">Shop Now!</a>
+            {% if user.is_authenticated %}
+              <a href="{% url 'discountsApp:add-product' id=item.Product_ID %}" class="btn btn-secondary small-4">Add to wishlist</a>
+            {% endif %}
+          </div>
+
+        </div>
+
+      </div>
+  </div>
+
+    {% endfor %}  
+ {% endif %}
+
+ <p>
+    {% if elec_item.has_previous %}
+      <a href="?page={{ elec_item.previous_page_number }}">Previous</a>
+      {% endif %}
+      
+      Page {{ elec_item.number }} of {{ elec_item.paginator.num_pages }}.
+      {% if elec_item.has_next %}
+      <a href="?page={{ elec_item.next_page_number }}">Next</a>
+    {% endif %}
+</p>
+
+
+
+{%endblock%}
