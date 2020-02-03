@@ -7,24 +7,29 @@ import datetime
 class Product(models.Model):
 
     Product_ID = models.AutoField(primary_key=True) 
-    ProductName = models.CharField(max_length=200) #product name
+    ProductName = models.CharField(max_length=200)
+
+    twoWeeks =timezone.now() + datetime.timedelta(days=14)
+
 
     PubTime = models.DateTimeField(auto_now=False, auto_now_add=False) 
+    #if there's no endding time, make the default endding time two weeks until now
     EndTime = models.DateTimeField(auto_now=False, auto_now_add=False) 
 
-    OriPrice = models.FloatField(default=0)
-    DisPrice = models.FloatField(default=0)
+    OriPrice = models.FloatField(default=0) #original price
+    DisPrice = models.FloatField(default=0) #price after discount
 
     Shoplink = models.URLField(max_length=500)
     imglink = models.URLField(max_length=500)
 
-    Tag = models.CharField(max_length=200)
-    click = models.IntegerField(default=0)
+    Tag = models.CharField(max_length=200)  #tag for the product, at present only luxury, clothing, electronic
+    click = models.IntegerField(default=0)  # count how many times of this product has been clicked
     
 
     def __str__(self):
         return self.ProductName
-    
+
+    #check if the item's discount has ended, if end= Ture, not end: False
     def isExpired(self):
         now = timezone.now()
         if self.EndTime >now:
@@ -34,6 +39,7 @@ class Product(models.Model):
 
     isExpired.admin_order_field = 'PubTime'
 
+    #change the display form to calculate how many time left for endding
     def showEndTime(self):
         return self.EndTime.strftime('%D')
 

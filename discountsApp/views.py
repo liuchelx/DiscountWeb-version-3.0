@@ -2,6 +2,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.template import loader
+from django.core import serializers
 from django.http import HttpResponse, HttpResponseRedirect,JsonResponse
 from . import views
 from .forms import UserSignUpForm, UserUpdateForm, UserProfileUpdateForm
@@ -11,13 +12,16 @@ import datetime
 from django.utils import timezone
 from .models import Product
 from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+import difflib
 
 
-
+#to do ,display the index page directly, not the mainPage
 def main_page(request):
     return render(request, 'discountsApp/mainPage.html')
 
+
 def index(request):
+
     latest_item_list = Product.objects.order_by('PubTime')
     endding_item_list = Product.objects.order_by('EndTime')
     TodaySpecial =[]
@@ -26,20 +30,27 @@ def index(request):
     electronic_product=[]
     clothing=[]
     now =timezone.now()
+
     for i in range(len(latest_item_list)):
+        #display four items for each group, so the index would be not messy
         if len(TodaySpecial)==4  and len(luxury)==4 and len(electronic_product) ==4 and len(clothing) ==4:
             break
+
         else:
+            #fill the luxury group
             if latest_item_list[i].Tag == 'Luxury' and len(luxury)<4:
                 luxury.append(latest_item_list[i])
+            #fill the electronic group
             if latest_item_list[i].Tag == 'electronic product' and len(electronic_product)<4:
                 electronic_product.append(latest_item_list[i])
+            #fill clothing  group
             if latest_item_list[i].Tag == 'Clothing' and len(clothing)<4:
                 clothing.append(latest_item_list[i])
+            #display the item added today
             if now - latest_item_list[i].PubTime < datetime.timedelta(days=1) and len(TodaySpecial)<4:
                 TodaySpecial.append(latest_item_list[i])
+    #display the items that will end in two days
     for j in range(len(endding_item_list)):
-        print()
         if endding_item_list[j].EndTime - datetime.timedelta(days=2)< now and len(lastChance)<4 and endding_item_list[j].isExpired() ==False:
                 lastChance.append(endding_item_list[j])
 
@@ -50,16 +61,36 @@ def index(request):
         'luxury':luxury,
         'electronic_product':electronic_product,
         'clothing':clothing,
+        }
 
-    }
     return render(request,'discountsApp/index.html',context)
 
 def search(request):
-    keyWord = request.POST.get('keyWord',"")
-    print('keyword is',keyWord)
-    response ={'keyWord':keyWord}
-    # return JsonResponse(response)
-    return HttpResponse(request.POST.items())
+    item_list=[]
+    result =[]
+    all_item_list = Product.objects.order_by('PubTime')
+
+    #get all the product name so we can compare to the user input
+    for item in all_item_list:
+        item_list.append(item.ProductName)
+
+    if request.method =='GET':
+        key = request.GET.get('searchKeyWord'," ")
+
+
+    #compare the user input and the product name from database
+    #the cutoff is the accurace, 0.1 is too low, but 0.2 can not show correct result sometime, need a better way
+    name_result = difflib.get_close_matches(key,item_list,20,cutoff=0.1)
+
+    for product in all_item_list:
+        if product.ProductName in name_result:
+            result.append(product)
+
+    context ={
+        'result':result
+    }
+    return render(request,'discountsApp/searchResult.html',context)
+
 
 def allPorduct(request):
     item_list = Product.objects.order_by('PubTime')
@@ -78,9 +109,9 @@ def luxury(request):
         if item.Tag == 'Luxury':
             luxury.append(item)
     
+    #using the pageinator to set different pages, can be replaced by unlimited scroll down
     paginator = Paginator(luxury,2)
    
-
     page = request.GET.get('page') 
     try:
         luxury = paginator.page(page)  
@@ -157,7 +188,6 @@ def lastChancePage(request):
     return render(request,'discountsApp/lastChance.html',context)
 
 
-
 def signUp(request):
     if request.method == 'POST':
         form = UserSignUpForm(request.POST)
@@ -171,23 +201,6 @@ def signUp(request):
         form = UserSignUpForm()
         print('invalid')
 
-    # if request.method == 'POST' and form.is_valid():
-    #     new_user = form.save()
-    #     return HttpResponseRedirect('/')
-    # form = forms.signUpForm()
-    # if request == 'POST':
-    #     form = forms.signUpForm(request.POST)
-    #     if form.is_valid():
-
-    #         user_name = form.cleaned_data.get('user_name')
-    #         email = form.cleaned_data.get('email')
-    #         password = form.cleaned_data.get('password')
-    #         new_user = User(name=user_name, password=password, email=email)
-    #         new_user.save()
-
-    #     else:
-    #         form = forms.signUpForm()
-    # return render(request, 'discountsApp/signUp.html', {'form': form})
     return render(request, 'discountsApp/signUp.html', {'form': form})
 
 @login_required
@@ -232,6 +245,7 @@ def remove_from_wishlist(request, id):
         messages.success(request, f'Item removed!')
 
     return redirect('discountsApp:wishlist')
+
 
 @login_required
 def wishlist(request):
