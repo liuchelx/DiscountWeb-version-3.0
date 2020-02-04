@@ -1,15 +1,14 @@
 from django.contrib import admin
 from .models import Profile
-# Register your models here.
-admin.site.register(Profile)
 from .models import Product
 
-# Register your models here.
-#admin.site.register(Product)
+
+admin.site.register(Profile)
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     #all the info show to user
+    #to do change the Tag to a selectable list
     list_display =('Product_ID','ProductName','PubTime','EndTime','Tag','click','isExpired')
 
     ordering = ('PubTime',)

@@ -1,0 +1,31 @@
+{% extends './base.html' %}  {% load static %} {% block content%}
+
+
+<div class="container mt-4">
+    {%    if result   %}
+    <h4 class="text-secondary">Here is the item we find for you:</h3>
+    <div class="row">
+     
+      {% for product in result %}
+        <div class="col-lg-4 col-md-6 mb-4" style="width: 18rem;">
+          <img src="{{product.imglink}}" class="card-img-top" alt="Product" />
+          <div class="card-body">
+            <h5 class="card-title">{{ product.ProductName }}</h5>
+            <p class="card-text">
+              <s>{{ product.OriPrice }}$</s><br>
+              <b>{{ product.DisPrice }}$</b><br>
+              End at:{{ product.showEndTime }}
+            </p>
+            <a href= "{{product.Shoplink}}" class="btn btn-primary">Shop Now!</a>
+          </div>
+        </div>
+
+      {% endfor %}
+
+  </div>
+  {% endif %}
+  </div>
+
+
+
+{%endblock%}

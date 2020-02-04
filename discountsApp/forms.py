@@ -21,14 +21,4 @@ class UserProfileUpdateForm(forms.ModelForm):
         model = Profile
         fields = ['image']
 
-# class signUpForm(ModelForm):
-#     name = forms.CharField()
-#     email = forms.EmailField()
-#     password = forms.CharField(widget=forms.PasswordInput)
 
-#     class Meta:
-#         model = models.User
-#         fields = ('name', 'email', 'password')
-
-
-# try login match
